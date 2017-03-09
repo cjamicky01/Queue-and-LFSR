@@ -13,6 +13,8 @@
 #include <cstddef>
 #include "queue.h"
 #include "lfsr.h"
+#include "queue.cpp"
+#include "lfsr.cpp"
 
 using namespace std;
 

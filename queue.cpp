@@ -23,7 +23,7 @@ void Queue::MakeEmpty() {
 // Deallocates all queue nodes and returns queue to empty ready-to-use state 
 
 void Queue::Enqueue(int n) {
-	Node *temp = rearPtr;
+	Node *temp = new Node();
 	if (IsFull()) {
 		throw QueueFull();
 	}
@@ -57,6 +57,9 @@ void Queue::Dequeue() {
 // If queue is empty, throws QueueEmpty exception
 
 int Queue::Front() const {
+	if(IsEmpty()){
+		throw QueueEmpty();
+	}
 	Node *temp = rearPtr;
 	int counter = 0;
 	while (counter < this->count) {
@@ -71,6 +74,9 @@ int Queue::Front() const {
 // DOES NOT MODIFY THE QUEUE
 
 int Queue::Rear() const {
+	if(IsEmpty()){
+		throw QueueEmpty();
+	}
 	return rearPtr->data;
 }
 // Rear()
@@ -122,9 +128,9 @@ bool Queue::IsEmpty() const {
 
 int Queue::Size() const {
 	int counter = 0;
-	Node temp = rearPtr;
-	while (temp->next != nullptr) {
-		temp = temp->next;
+	Node *temp = rearPtr;
+	while (temp->nextPtr != nullptr) {
+		temp = temp->nextPtr;
 		counter++;
 	}
 	return counter;
