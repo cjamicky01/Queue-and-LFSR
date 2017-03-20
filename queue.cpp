@@ -2,36 +2,52 @@
 
 Queue::Queue() {
 	rearPtr = nullptr;
-	count = 0;
 }
 // Queue()
 // Initializes all private variables to indicate an empty queue
 
-Queue::~Queue() {
-	MakeEmpty();
-	delete rearPtr;
-}
+
 //~Queue()
 // Deallocates all queue nodes
 
 void Queue::MakeEmpty() {
-	while (!IsEmpty()) {
+	while (!IsEmpty()) 
+	{
 		Dequeue();
 	}
 }
 // MakeEmpty()
 // Deallocates all queue nodes and returns queue to empty ready-to-use state 
 
+bool Queue::IsEmpty() const {
+	if (rearPtr == nullptr) {
+		return true;
+	}
+	return false;
+}
+// IsEmpty()
+// Returns true if queue is empty.  Returns false otherwise.  DOES NOT MODIFY THE QUEUE
+
 void Queue::Enqueue(int n) {
-	Node *temp = new Node();
+	Node *temp = new Node;	
 	if (IsFull()) {
 		throw QueueFull();
 	}
 	else {
-		temp->data = n;
-		temp->nextPtr = rearPtr;
-		rearPtr = temp;
-		this->count++;
+		if(count == 0)
+		{
+			temp->data = n;
+			temp->nextPtr = temp;
+			rearPtr=temp;
+			count++;
+		} else {
+			Node *first = rearPtr->nextPtr;
+			temp->data = n;
+			temp->nextPtr = first;
+			rearPtr->nextPtr = temp;
+			rearPtr = temp;
+			count++;
+		}
 	}
 }
 // Enqueue()
@@ -39,17 +55,22 @@ void Queue::Enqueue(int n) {
 // If queue is already full, throws QueueFull exception
 
 void Queue::Dequeue() {
-	Node *temp = rearPtr;
-	int counter = 0;
 	if (IsEmpty()) {
 		throw QueueEmpty();
 	}
 	else {
-		while (counter < this->count) {
-			temp = temp->nextPtr;
-			counter++;
+		if(count == 1){
+			Node *temp = rearPtr;
+			rearPtr = nullptr;
+			delete temp;
+			count--;
+		} else {
+			Node *temp = rearPtr->nextPtr;
+			Node *newHead = temp->nextPtr;
+			rearPtr->nextPtr = newHead;
+			delete temp;
+			count--;
 		}
-		delete temp;
 	}
 }
 // Dequeue()
@@ -59,14 +80,10 @@ void Queue::Dequeue() {
 int Queue::Front() const {
 	if(IsEmpty()){
 		throw QueueEmpty();
+	} else {
+		return rearPtr->nextPtr->data;	
 	}
-	Node *temp = rearPtr;
-	int counter = 0;
-	while (counter < this->count) {
-		temp = temp->nextPtr;
-		counter++;
-	}
-	return temp->data;
+
 }
 // Front()
 // Returns integer from front of queue
@@ -76,8 +93,9 @@ int Queue::Front() const {
 int Queue::Rear() const {
 	if(IsEmpty()){
 		throw QueueEmpty();
+	} else {
+		return rearPtr->data;
 	}
-	return rearPtr->data;
 }
 // Rear()
 // Returns integer from rear of queue
@@ -85,17 +103,17 @@ int Queue::Rear() const {
 // DOES NOT MODIFY THE QUEUE
 
 int Queue::Peek(int n) const {
-	int counter = 0;
-	Node *temp = rearPtr;
-	if (n > Size()) {
-		throw QueueInvalidPeek();
+	
+	if (Size() > n) {
+		Node *temp = rearPtr->nextPtr;
+		for (int i = 0; i < n; i++)
+		{
+			temp = temp->nextPtr;
+		}
+		return temp->data;
 	}
 	else {
-		while (counter < n) {
-			temp = temp->nextPtr;
-			counter++;
-		}
-		return temp->data;	
+		throw QueueInvalidPeek();	
 	}
 }
 // Peek()
@@ -105,35 +123,19 @@ int Queue::Peek(int n) const {
 // DOES NOT MODIFY THE QUEUE
 
 bool Queue::IsFull() const {
-	if (this->count >= 10) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return false;
 }
 // IsFull()
 // Returns true if queue is full.  Returns false otherwise.  DOES NOT MODIFY THE QUEUE
 
-bool Queue::IsEmpty() const {
-	if (rearPtr == nullptr) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-// IsEmpty()
-// Returns true if queue is empty.  Returns false otherwise.  DOES NOT MODIFY THE QUEUE
+
 
 int Queue::Size() const {
-	int counter = 0;
-	Node *temp = rearPtr;
-	while (temp->nextPtr != nullptr) {
-		temp = temp->nextPtr;
-		counter++;
-	}
-	return counter;
+	return count;
 }
 // Size()
 // Returns number of items stored in queue.  DOES NOT MODIFY THE QUEUE
+
+Queue::~Queue() {
+	MakeEmpty();
+}

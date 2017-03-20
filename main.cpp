@@ -11,6 +11,7 @@
 #include <fstream>
 #include <new>
 #include <cstddef>
+#include <stdlib.h>
 #include "queue.h"
 #include "lfsr.h"
 #include "queue.cpp"
